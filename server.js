@@ -1,10 +1,19 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
+const users = require('./routes/api/users');
+const profiles = require('./routes/api/profiles');
+const posts = require('./routes/api/posts');
+
 const app = express();
 
 // DB config
 const db =require('./config/keys').mongoURI
+
+// Use routes
+app.use('/api/users', users);
+app.use('/api/profiles', profiles);
+app.use('/api/posts', posts);
 
 // connect to DB
 mongoose
