@@ -39,4 +39,24 @@ router.post('/register', (req, res) => {
             });
         });
 
+router.post('/login', (req, res)=>{
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({email})
+        .then(user => {
+            // Check for user
+            if(!user) return res.status(404).json({User: "User not found"})
+
+            // Check password
+            bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if(isMatch) {
+                        res.json({msg: "User logged in"})
+                    }
+                    return res.status(404).json({User: "User not found"})
+                })
+        })
+})
+
 module.exports = router;
