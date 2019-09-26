@@ -1,6 +1,10 @@
 import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import express from 'express';
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const router = express.Router();
 
@@ -46,17 +50,28 @@ router.post('/login', (req, res)=>{
     User.findOne({email})
         .then(user => {
             // Check for user
-            if(!user) return res.status(404).json({User: "User not found"})
+            if(!user) return res.status(404).json({User: "User not found"});
 
             // Check password
             bcrypt.compare(password, user.password)
                 .then(isMatch => {
                     if(isMatch) {
-                        res.json({msg: "User logged in"})
+                        // jwt payload
+                        const payload = {
+                            id: user.id, name: user.name, avatar: user.avatar
+                        }
+                        // Generate token
+                        jwt.sign(payload, process.env.secret, {expiresIn: 3600}, (err, token)=>{
+                            res.json({
+                                success: true,
+                                token: `Bearer ${token}`
+                            })
+                        });
+                    } else{
+                        return res.status(404).json({User: "User not found"});
                     }
-                    return res.status(404).json({User: "User not found"})
-                })
-        })
-})
+                });
+        });
+});
 
 module.exports = router;
