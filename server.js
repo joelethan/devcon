@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import passport from 'passport';
 
 const users = require('./routes/api/users');
 const profiles = require('./routes/api/profiles');
@@ -26,7 +27,11 @@ mongoose
     .then(()=> console.log('Connected'))
     .catch(err => console.log(err))
 
-app.get('/', (req, res) => res.send('Hello world'),);
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport Config
+require('./config/passport')(passport);
 
 const port = process.env.PORT || 5000;
 

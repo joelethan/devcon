@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
+const passport = require('passport')
 
 dotenv.config();
 
@@ -72,6 +73,17 @@ router.post('/login', (req, res)=>{
                     }
                 });
         });
+});
+
+// Protected route
+router.get('/current', passport.authenticate('jwt', { session: false }), (req, res)=>{
+    res.json({
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        avatar: req.user.avatar,
+        date: req.user.date
+    });
 });
 
 module.exports = router;
