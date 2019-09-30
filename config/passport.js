@@ -6,10 +6,9 @@ dotenv.config();
 
 const User = mongoose.model('users');
 
-const opts = {
-    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey : process.env.secret
-};
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = process.env.secret;
 
 module.exports = passport =>{
     passport.use(new JwtStrategy(opts, (jwt_payload, done)=>{

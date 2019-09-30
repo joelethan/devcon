@@ -9,12 +9,22 @@ dotenv.config();
 
 const router = express.Router();
 
+// Load Input validations
+const validateRegisterInput = require('../../validation/register');
+
+// Check for validation errors
+if(!isValid){
+    return res.status(400).json(errors);
+}
+
 const User = require('../../models/User');
 
 router.get('/', (req, res) => res.json({msg: "Users works"}));
 
 // User registration
 router.post('/register', (req, res) => {
+    const { errors, isValid } = validateRegisterInput(req.body);
+
     User.findOne({email: req.body.email})
         .then(user =>{
             if(user) return res.status(400).json({email: "Email already exists"});
